@@ -1,0 +1,27 @@
+spring:
+  profiles:
+    active: local
+
+
+--- #local ??R
+spring:
+  data:
+    mongodb:
+      #      uri: mongodb+srv://admin:1q2w3e4r!@cluster0.kjzqz.mongodb.net/SBlog?retryWrites=true&w=majority
+      uri: mongodb://139.177.200.169:27117/E-Commerce
+
+
+  thymeleaf:
+    cache: false
+    prefix: file:src/main/resources/templates/
+
+  devtools:
+    restart:
+      enabled: true
+  config:
+    activate:
+      on-profile: local
+
+logging: # ROOT?? ?? ?? ?? ??
+  level:
+    root: info
