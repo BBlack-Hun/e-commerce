@@ -22,4 +22,9 @@ public class CategoryServiceImpl implements CategoryService{
     public void addCategory(Category category) {
         mongoRepository.save(category);
     }
+
+    @Override
+    public void removeCategoryById(String id) {
+        mongoRepository.deleteById(id);
+    }
 }
