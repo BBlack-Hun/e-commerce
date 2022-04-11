@@ -1,7 +1,10 @@
 package kr.co.bblackhun.ecommerce.Admin.controller;
 
-import kr.co.bblackhun.ecommerce.Admin.dto.Category;
+import kr.co.bblackhun.ecommerce.Admin.dto.ProductDTO;
+import kr.co.bblackhun.ecommerce.Admin.model.Category;
+import kr.co.bblackhun.ecommerce.Admin.model.Product;
 import kr.co.bblackhun.ecommerce.Admin.service.CategoryService;
+import kr.co.bblackhun.ecommerce.Admin.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -17,6 +20,7 @@ import java.util.Optional;
 public class AdminController {
 
     private final CategoryService categoryService;
+    private final ProductService productService;
 
     @GetMapping("")
     public String adminHome() {
@@ -59,5 +63,18 @@ public class AdminController {
         }
     }
 
-    //Product
+    //Product Section
+    @GetMapping("/products")
+    public String getProduct(Model model) {
+        model.addAttribute("products", productService.getAllProducts());
+        return "Admin/products";
+    }
+
+    @GetMapping("/products/add")
+    public String addProduct(Model model) {
+        model.addAttribute("productDTO", new ProductDTO());
+        model.addAttribute("update", false);
+        model.addAttribute("categories", categoryService.getAllCategory());
+        return "Admin/productsAdd";
+    }
 }
