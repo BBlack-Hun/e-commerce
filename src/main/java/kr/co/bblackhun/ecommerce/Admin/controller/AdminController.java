@@ -7,10 +7,16 @@ import kr.co.bblackhun.ecommerce.Admin.service.CategoryService;
 import kr.co.bblackhun.ecommerce.Admin.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 @Slf4j
@@ -18,6 +24,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RequestMapping("admin")
 public class AdminController {
+
+    public static String uploadDir = System.clearProperty("user.dir") + "/src/main/resources/static/productImages";
 
     private final CategoryService categoryService;
     private final ProductService productService;
@@ -71,10 +79,37 @@ public class AdminController {
     }
 
     @GetMapping("/products/add")
-    public String addProduct(Model model) {
+    public String getProductAdd(Model model) {
         model.addAttribute("productDTO", new ProductDTO());
         model.addAttribute("update", false);
         model.addAttribute("categories", categoryService.getAllCategory());
         return "Admin/productsAdd";
+    }
+
+    @PostMapping("/products/add")
+    public String postProductAdd(@ModelAttribute("productDTO") ProductDTO productDTO,
+                                 @RequestParam("productImage")MultipartFile file,
+                                 @RequestParam("imgName") String imgName) throws IOException {
+
+        System.out.println(uploadDir);
+        Product product = new Product();
+        product.setName(productDTO.getName());
+        product.setCategory(categoryService.getCategoryById(productDTO.getCategoryId()).get());
+        product.setPrice(productDTO.getPrice());
+        product.setWeight(productDTO.getWeight());
+        product.setDescription(productDTO.getDescription());
+        String imageUUID;
+        if(!file.isEmpty()) {
+            imageUUID = file.getOriginalFilename();
+            Path fileNameAndPath = Paths.get(uploadDir, imageUUID);
+            Files.write(fileNameAndPath, file.getBytes());
+        } else {
+            imageUUID = imgName;
+        }
+
+        product.setImageName(imageUUID);
+        productService.addProduct(product);
+
+        return "redirect:/admin/products";
     }
 }
