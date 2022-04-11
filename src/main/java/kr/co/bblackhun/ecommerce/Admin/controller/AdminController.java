@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @Slf4j
 @Controller
 @RequiredArgsConstructor
@@ -43,5 +45,17 @@ public class AdminController {
     public String deleteCat(@PathVariable String id) {
         categoryService.removeCategoryById(id);
         return "redirect:/admin/categories";
+    }
+
+    @GetMapping("/categories/update/{id}")
+    public String updateCat(@PathVariable String id, Model model) {
+        Optional<Category> category = categoryService.getCategoryById(id);
+        if(category.isPresent()) {
+            model.addAttribute("category", category.get());
+            model.addAttribute("update", true);
+            return "Admin/categoriesAdd";
+        } else {
+            return "404";
+        }
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,5 +27,10 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     public void removeCategoryById(String id) {
         mongoRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<Category> getCategoryById(String id) {
+        return mongoRepository.findById(id);
     }
 }
