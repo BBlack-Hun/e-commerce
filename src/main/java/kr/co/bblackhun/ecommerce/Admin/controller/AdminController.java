@@ -81,7 +81,6 @@ public class AdminController {
     @GetMapping("/products/add")
     public String getProductAdd(Model model) {
         model.addAttribute("productDTO", new ProductDTO());
-        model.addAttribute("update", false);
         model.addAttribute("categories", categoryService.getAllCategory());
         return "Admin/productsAdd";
     }
@@ -93,6 +92,9 @@ public class AdminController {
 
         System.out.println(uploadDir);
         Product product = new Product();
+        if (productDTO.getId() != "") {
+            product.setId(productDTO.getId());
+        }
         product.setName(productDTO.getName());
         product.setCategory(categoryService.getCategoryById(productDTO.getCategoryId()).get());
         product.setPrice(productDTO.getPrice());
@@ -111,5 +113,31 @@ public class AdminController {
         productService.addProduct(product);
 
         return "redirect:/admin/products";
+    }
+
+    @GetMapping("/product/delete/{id}")
+    public String deleteProduct(@PathVariable String id) {
+        productService.removeProductById(id);
+        return "redirect:/admin/products";
+    }
+
+    @GetMapping("/product/update/{id}")
+    public String updateProduct(@PathVariable String id, Model model) {
+        Product product = productService.getProductById(id).get();
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setId(product.getId());
+        productDTO.setName(product.getName());
+        productDTO.setCategoryId(product.getCategory().getId());
+        productDTO.setPrice(product.getPrice());
+        productDTO.setWeight(product.getWeight());
+        productDTO.setDescription(product.getDescription());
+        productDTO.setImageName(product.getImageName());
+
+
+        model.addAttribute("update", true);
+        model.addAttribute("categories", categoryService.getAllCategory());
+        model.addAttribute("productDTO", productDTO);
+
+        return "Admin/productsAdd";
     }
 }
