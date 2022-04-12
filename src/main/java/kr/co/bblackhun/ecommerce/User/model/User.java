@@ -40,10 +40,15 @@ public class User {
     @LastModifiedDate
     private LocalDateTime modified;
 
+
+    public User(User user) {
+    }
+
     public User(String username, String email, String password, List<Role> roles) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.roles = roles;
     }
+
 }
