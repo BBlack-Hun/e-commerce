@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -22,33 +23,36 @@ public class User {
 
     @NotBlank
     @Size(max = 20)
-    private String username;
+    private String userName;
 
     @NotBlank
     @Size(max = 50)
     @Email
+    @Indexed(unique = true)
     private String email;
 
     @NotBlank
     private String password;
 
-    @DBRef
-    private List<Role> roles;
+    private ERole roles;
 
     @CreatedDate
-    private LocalDateTime created;
+    private LocalDateTime createdAt = LocalDateTime.now();
     @LastModifiedDate
-    private LocalDateTime modified;
+    private LocalDateTime updatedAt = LocalDateTime.now();
 
+    public User() {
+
+    }
 
     public User(User user) {
+        this.userName = user.getUserName();
+        this.email = user.getEmail();
+        this.password = user.getPassword();
+        this.roles = user.getRoles();
     }
 
-    public User(String username, String email, String password, List<Role> roles) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.roles = roles;
-    }
+
+
 
 }

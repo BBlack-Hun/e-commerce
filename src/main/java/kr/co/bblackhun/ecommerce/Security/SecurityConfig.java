@@ -1,4 +1,4 @@
-package Security;
+package kr.co.bblackhun.ecommerce.Security;
 
 import kr.co.bblackhun.ecommerce.User.service.CustomUserDetailService;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +13,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
-@EnableWebSecurity
 @RequiredArgsConstructor
+@EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CustomUserDetailService customUserDetailService;
@@ -23,13 +23,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/", "/shop/**", "/forgotpassword", "/register").permitAll()
-                .antMatchers("/admin/**").hasRole("ROLE_ADMIN")
+                .antMatchers("/", "/shop/**",  "/register").permitAll()
+                .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest()
                 .authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/Login/login")
+                .loginPage("/login")
                 .permitAll()
                 .failureUrl("/login?error=true")
                 .defaultSuccessUrl("/")
@@ -58,7 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(customUserDetailService);
+        auth.userDetailsService(customUserDetailService).passwordEncoder(bCryptPasswordEncoder());
     }
 
     @Override
