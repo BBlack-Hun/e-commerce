@@ -1,5 +1,6 @@
 package kr.co.bblackhun.ecommerce.Login.controller;
 
+import kr.co.bblackhun.ecommerce.Cart.global.GlobalData;
 import kr.co.bblackhun.ecommerce.User.model.ERole;
 import kr.co.bblackhun.ecommerce.User.model.User;
 import kr.co.bblackhun.ecommerce.User.repository.UserRepository;
@@ -26,6 +27,7 @@ public class LoginController {
 
     @GetMapping("/login")
     public String login() {
+        GlobalData.cart.clear();
         return "Login/login";
     }
 
